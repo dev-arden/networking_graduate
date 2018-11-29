@@ -6,8 +6,8 @@ var bodyParser = require('body-parser');
 
 // 데이터베이스와 연결합니다.
 var connection = mysql.createConnection({
-    host: "graduate.cbiz6ipldrs0.ap-northeast-2.rds.amazonaws.com",
-    user: "soo",
+    host: "graduate.c8orux21tjlg.ap-northeast-2.rds.amazonaws.com",
+    user: "rain",
     database: "graduate",
     password: "11111111",
     port: 3306
