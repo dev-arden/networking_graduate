@@ -41,7 +41,7 @@ public class main {
 		// BufferedInputStream reader = null;
 
 			BufferedReader reader = null;
-			String linenumber = "5호선";//경의중앙선 안되고 경의선으로 해야함
+			String linenumber = "5호선";//경의중앙선 안되고 경의선으로 해야함, 인천1호선,2호선안되고 그냥 인천으로
 			int endindex = 100;
 			try {
 				URL url = new URL("http://openapi.seoul.go.kr:8088/4877546f78646c643639504d4e7641/json/SearchSTNBySubwayLineInfo"
