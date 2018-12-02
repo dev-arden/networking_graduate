@@ -11,3 +11,5 @@ public class Control {
 	    t.tableSelect(); //table내 모든 데이터를 출력합니다.
 	  }
 }
+
+//커밋행함
