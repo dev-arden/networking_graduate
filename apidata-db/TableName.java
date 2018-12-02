@@ -1,4 +1,4 @@
-package dbtest;
+
 public class TableName {
 	  /*데이터베이스에 속성부분을 변수로 만들어 줍니다.*/
 	  int no;
