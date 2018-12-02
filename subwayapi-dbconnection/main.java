@@ -15,6 +15,8 @@ import org.json.simple.parser.JSONParser;
 public class main {
 	public main() throws Exception {
 
+		subwaydb t = new subwaydb();
+
 		JSONParser jsonparser = new JSONParser();
 		JSONObject jsonobject = (JSONObject) jsonparser.parse(readUrl());
 		JSONObject json = (JSONObject) jsonobject.get("SearchSTNBySubwayLineInfo");
@@ -29,7 +31,6 @@ public class main {
 			String line = (String) entity.get("LINE_NUM");
 			String codeFr = (String) entity.get("FR_CODE");
 
-			subwaydb t = new subwaydb();
 			t.tableInsert(code,name,nameEng,line,codeFr);
 			//t.tableSelect();
 		}
@@ -38,25 +39,28 @@ public class main {
 
 	private static String readUrl() throws Exception {
 		// BufferedInputStream reader = null;
-		BufferedReader reader = null;
-		try {
-			URL url = new URL("http://openapi.seoul.go.kr:8088/4877546f78646c643639504d4e7641/json/SearchSTNBySubwayLineInfo"
-					+ "/1/5/%20/%20/3호선");
 
-			reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
-			StringBuffer buffer = new StringBuffer();
+			BufferedReader reader = null;
+			String linenumber = "5호선";
+			int endindex = 100;
+			try {
+				URL url = new URL("http://openapi.seoul.go.kr:8088/4877546f78646c643639504d4e7641/json/SearchSTNBySubwayLineInfo"
+						+ "/1/" + endindex +"/%20/%20/" + linenumber);
 
-			String str;
+				reader = new BufferedReader(new InputStreamReader(url.openStream(), "UTF-8"));
+				StringBuffer buffer = new StringBuffer();
 
-			while ((str = reader.readLine()) != null) {
-				buffer.append(str);
+				String str;
+
+				while ((str = reader.readLine()) != null) {
+					buffer.append(str);
+				}
+
+				return buffer.toString();
+			} finally {
+				if (reader != null)
+					reader.close();
 			}
-
-			return buffer.toString();
-		} finally {
-			if (reader != null)
-				reader.close();
-		}
 	}
 
 	public static void main(String[] args) {
