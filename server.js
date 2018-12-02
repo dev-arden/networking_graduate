@@ -51,10 +51,41 @@ app.post('/insert', function (request, response) {
     // 변수를 선언합니다.
     var body = request.body;
     // 데이터베이스 쿼리를 실행합니다.
-    connection.query('INSERT INTO android (name, country) VALUES (?, ?)', [
-        body.name, body.country
-    ], function () {
+    connection.query('INSERT INTO android (name, country) VALUES (?, ?)', [body.name, body.country], function () {
         // 응답합니다.
         response.redirect('/');
     });
+});
+
+app.get('/select', function (request, response) {
+    // 파일을 읽습니다.
+    fs.readFile('select.html', 'utf8', function (error, data) {
+        // 응답합니다.
+        response.send(data);
+    });
+});
+
+app.post('/select', function (req, res) {
+    var body = req.body;
+    connection.query('select * from subway where STATION_NM = ?', [body.name],function (err, result) {
+        if (err)
+            console.log(err)
+        else {
+            if (result.length === 0) {
+                res.json({
+                    data: false,
+                    msg: '존재하지 않는 지하철입니다!'
+                });
+            } else {
+                res.json({
+                    data: true,
+                    msg: '존재하는지하철입니다!',
+                    지하철이름: body.name,
+                    지하철이름영어로: result[0].STATION_NM_ENG,
+                    지하철코드: result[0].STATION_CD
+                });
+            }
+            //res.redirect('/');
+        }
+    })
 });
