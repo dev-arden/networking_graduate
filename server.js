@@ -30,7 +30,7 @@ app.get('/', function (request, response) {
     // 파일을 읽습니다.
     fs.readFile('list.html', 'utf8', function (error, data) {
         // 데이터베이스 쿼리를 실행합니다.
-        connection.query('SELECT * FROM android', function (error, results) {
+        connection.query('SELECT * FROM userinfo', function (error, results) {
             // 응답합니다.
             response.send(ejs.render(data, {
                 data: results
@@ -51,7 +51,9 @@ app.post('/insert', function (request, response) {
     // 변수를 선언합니다.
     var body = request.body;
     // 데이터베이스 쿼리를 실행합니다.
-    connection.query('INSERT INTO android (name, country) VALUES (?, ?)', [body.name, body.country], function () {
+    connection.query('INSERT INTO userinfo (name) VALUES (?)', [body.name], function (err,res) {
+      if(err)
+        console.log(err)
         // 응답합니다.
         response.redirect('/');
     });
