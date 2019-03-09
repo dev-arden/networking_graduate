@@ -3,6 +3,8 @@ var ejs = require('ejs');
 var mysql = require('mysql');
 var express = require('express');
 var bodyParser = require('body-parser');
+var http = require('http');
+var java = require('java');
 
 // 데이터베이스와 연결합니다.
 var connection = mysql.createConnection({
@@ -15,29 +17,80 @@ var connection = mysql.createConnection({
 connection.connect();
 
 // 서버를 생성합니다.
-var app = express();
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
+var app = module.exports = express();
+// set CORS
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
+//app.use(bodyParser({limit: '50mb'}));
+app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.json({limit: '50mb'}));
+
+app.set('port', process.env.PORT || 3000);
+app.use(express.static(__dirname + '/public'));
+
+
+// import Hello class
+java.classpath.push("./algorithm_odsay2.jar/");
+var Hello = java.import("algorithm_odsay2.main");
+
+app.get('/result', function(req, res) {
+  // 파일을 읽습니다.
+  fs.readFile('result.html', 'utf8', function (error, data) {
+      // 응답합니다.
+      response.send(data);
+  });
+});
+app.post('/result', function(req, res) {
+    res.send(Hello.mainSync(String));
+});
+
+// app.post('/main', function(req, res) {
+//     res
+// });
+
+app.get('/show', function(req, res) {
+    res.send(Hello.showSync());
+});
 
 // 서버를 실행합니다.
-app.listen(3000, function(){
-    console.log("Express server has started on port 3000")
-});
+// app.listen(3000, function(){
+//     console.log("Express server has started on port 3000")
+// });
 
 // 라우트를 수행합니다.
 app.get('/', function (request, response) {
     // 파일을 읽습니다.
+
+
+    // connection.query('SELECT * from Person', function(err, rows, fields) {
+    // connection.end();
+    //   if (!err){
+    //     response.send(rows);
+    //     console.log('The solution is: ', rows);
+    //   }
+    //   else
+    //     console.log('Error while performing Query.');
+    //   });
+    // });
+
+
     fs.readFile('list.html', 'utf8', function (error, data) {
         // 데이터베이스 쿼리를 실행합니다.
-        connection.query('SELECT * FROM userinfo', function (error, results) {
+        connection.query('SELECT id, name FROM userinfo ', function (error, rows,results) {
             // 응답합니다.
-            response.send(ejs.render(data, {
-                data: results
-            }));
+            if (!error){
+              response.send(rows);
+              //console.log('The solution is: ', rows);
+            }
         });
     });
 });
+
 
 app.get('/insert', function (request, response) {
     // 파일을 읽습니다.
@@ -51,10 +104,13 @@ app.post('/insert', function (request, response) {
     // 변수를 선언합니다.
     var body = request.body;
     // 데이터베이스 쿼리를 실행합니다.
-    connection.query('INSERT INTO userinfo (name) VALUES (?)', [body.name], function (err,res) {
+    connection.query('INSERT INTO userinfo (name, userRoute) VALUES (?,?)', [body.name, body.userRoute], function (err,res) {
       if(err)
         console.log(err)
         // 응답합니다.
+      // else{
+      //
+      // }
         response.redirect('/');
     });
 });
@@ -73,21 +129,51 @@ app.post('/select', function (req, res) {
         if (err)
             console.log(err)
         else {
-            if (result.length === 0) {
-                res.json({
-                    data: false,
-                    msg: '존재하지 않는 지하철입니다!'
-                });
+          if (result.length === 0) {
+              res.json({
+                  //data: false,
+                  //msg:
+                  msg:'존재하지 않는 지하철입니다!'
+              });
             } else {
                 res.json({
-                    data: true,
-                    msg: '존재하는지하철입니다!',
-                    지하철이름: body.name,
-                    지하철이름영어로: result[0].STATION_NM_ENG,
-                    지하철코드: result[0].STATION_CD
+                    //data: true,
+                    //msg:
+                    msg:'존재하는지하철입니다!'
+                    //지하철이름: body.name,
+                    //지하철이름영어로: result[0].STATION_NM_ENG,
+                    //지하철코드: result[0].STATION_CD
                 });
             }
             //res.redirect('/');
         }
     })
+});
+
+app.get('/userresult', function (request, response) {
+    // 파일을 읽습니다.
+    fs.readFile('insert.html', 'utf8', function (error, data) {
+        // 응답합니다.
+        response.send(data);
+    });
+});
+app.post('/userresult', function (request, response) {
+    // 변수를 선언합니다.
+    //var body = request.body;
+    // 데이터베이스 쿼리를 실행합니다.
+    connection.query('select * from rankSave ',  function (err,rows) {
+      if(err)
+        console.log(err)
+        // 응답합니다.
+      else{
+        response.send(rows);
+      }
+
+    });
+});
+
+
+
+http.createServer(app).listen(app.get('port'), function () {
+  console.log('Express server listening on port ' + app.get('port'));
 });
