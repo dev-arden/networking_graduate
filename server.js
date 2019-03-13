@@ -5,6 +5,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var http = require('http');
 var java = require('java');
+//var java2 = require('java');
 
 // 데이터베이스와 연결합니다.
 var connection = mysql.createConnection({
@@ -38,6 +39,8 @@ app.use(express.static(__dirname + '/public'));
 java.classpath.push("./algorithm_odsay2.jar/");
 var Hello = java.import("algorithm_odsay2.main");
 
+
+
 app.get('/result', function(req, res) {
   // 파일을 읽습니다.
   fs.readFile('result.html', 'utf8', function (error, data) {
@@ -45,9 +48,15 @@ app.get('/result', function(req, res) {
       response.send(data);
   });
 });
+
+
+//왜 아톰이 안보내지냐고
 app.post('/result', function(req, res) {
     res.send(Hello.mainSync(String));
 });
+
+
+
 
 // app.post('/main', function(req, res) {
 //     res
@@ -161,7 +170,29 @@ app.post('/userresult', function (request, response) {
     // 변수를 선언합니다.
     //var body = request.body;
     // 데이터베이스 쿼리를 실행합니다.
-    connection.query('select * from rankSave ',  function (err,rows) {
+    connection.query('select user, rank, name from rankSave ',  function (err,rows) {
+      if(err)
+        console.log(err)
+        // 응답합니다.
+      else{
+        response.send(rows);
+      }
+
+    });
+});
+
+app.get('/showroute', function (request, response) {
+    // 파일을 읽습니다.
+    fs.readFile('showroute.html', 'utf8', function (error, data) {
+        // 응답합니다.
+        response.send(data);
+    });
+});
+app.post('/showroute', function (request, response) {
+    // 변수를 선언합니다.
+    //var body = request.body;
+    // 데이터베이스 쿼리를 실행합니다.
+    connection.query('select user, name from makeroute ',  function (err,rows) {
       if(err)
         console.log(err)
         // 응답합니다.
