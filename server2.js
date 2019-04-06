@@ -101,21 +101,6 @@ app.get('/', function (request, response) {
 });
 
 
-app.get('/completejoin', function (request, response) {
-    // 파일을 읽습니다.
-    fs.readFile('list.html', 'utf8', function (error, data) {
-        // 데이터베이스 쿼리를 실행합니다.
-        connection.query('SELECT userID,userPwd FROM userDB ', function (error, rows,results) {
-            // 응답합니다.
-            if (!error){
-              response.send(rows);
-              //console.log('The solution is: ', rows);
-            }
-        });
-    });
-});
-
-
 app.get('/insert', function (request, response) {
     // 파일을 읽습니다.
     fs.readFile('insert.html', 'utf8', function (error, data) {
@@ -128,19 +113,14 @@ app.post('/insert', function (request, response) {
     // 변수를 선언합니다.
     var body = request.body;
     // 데이터베이스 쿼리를 실행합니다.
-    connection.query('INSERT INTO allUser (name, userRoute, userID) VALUES (?,?,?)', [body.name, body.userRoute,body.userID], function (err,res) {
+    connection.query('INSERT INTO userinfo (name, userRoute) VALUES (?,?)', [body.name, body.userRoute], function (err,res) {
       if(err)
         console.log(err)
-        else{
-          connection.query('select * from allUser ',  function (err,rows) {
-            if(err)
-              console.log(err)
-              // 응답합니다.
-            else{
-              response.send(rows);
-            }
-          });
-        }
+        // 응답합니다.
+      // else{
+      //
+      // }
+        response.redirect('/');
     });
 });
 
@@ -224,35 +204,6 @@ app.post('/showroute', function (request, response) {
 
     });
 });
-
-// app.get('/join',function(request,response){
-//     fs.readFile('join.html','utf8',function(error,data){
-//       response.send(data);
-//     });
-// });
-//
-//
-// app.post('/join',function(req,response){
-//          var userId = req.body.userId;
-//          var userPwd = req.body.userPwd;
-//
-//          var sql = 'INSERT INTO userDB (userId, userPwd) VALUES (?,?)';
-//          var params = [userId, userPwd];
-//
-//          connection.query(sql,params,function(err,result){
-//                           if(err)
-//                           console.log(err);
-//                           else{
-//                           res.json({
-//                                    result:true,
-//                                    msg: '회원가입에 성공했습니다.'
-//                           })
-//                           }
-//                           });
-//
-//          });
-
-
 app.get('/join', function (request, response) {
     // 파일을 읽습니다.
     fs.readFile('join.html', 'utf8', function (error, data) {
@@ -260,54 +211,64 @@ app.get('/join', function (request, response) {
         response.send(data);
     });
 });
+app.post('/join',function(request,response){
+         var userId = req.body.userId;
+         var userPwd = req.body.userPwd;
 
-app.post('/join', function (request, response) {
-    // 변수를 선언합니다.
-    var body = request.body;
-    // 데이터베이스 쿼리를 실행합니다.
-    connection.query('INSERT INTO userDB (userId, userPwd) VALUES (?,?)', [body.email, body.password], function (err,rows) {
-      if(err)
-        console.log(err)
-      else{
-        connection.query('select * from userDB ',  function (err,rows) {
-          if(err)
-            console.log(err)
-            // 응답합니다.
-          else{
-            response.send(rows);
-          }
-        });
-      }
-    });
-});
+         var sql = 'INSERT INTO userDB (userId, userPwd) VALUES (?,?)';
+         var params = [userId, userPwd];
 
-
-
-
-app.get('/login',function(request, response){
-        fs.readFile('login.html','utf8',function(error,data){
-                    response.send(data);
-                    });
-        });
-
-
-
-app.post('/login', function(request, response){
-         var body = request.body;
-
-         connection.query('SELECT * FROM userDB where userId = ? and userPwd = ?', [body.userId, body.userPwd], function(err,result){
+         connection.query(sql,params,function(err,result){
                           if(err)
-                            console.log(err)
+                          console.log(err);
                           else{
-                              if(result.length===0){
-                              response.send({
-                                            result:true,
-                                            msg:'로그인성공!'
-                                            });
-                          }
+                          res.json({
+                                   result:true,
+                                   msg: '회원가입에 성공했습니다.'
+
+                          })
                           }
                           });
+
          });
+         app.get('/login', function (request, response) {
+             // 파일을 읽습니다.
+             fs.readFile('login.html', 'utf8', function (error, data) {
+                 // 응답합니다.
+                 response.send(data);
+             });
+         });
+app.post('/login',function(request, response){
+         var userId = req.body.userId;
+         var userPwd = req.body.userPwd;
+         var sql = 'select * from userDB where userId = ?'
+
+         connection.query(sql,userId,function(err,result){
+                          if(err)
+                          console.log(err)
+                          else{
+                          if(result.length===0){
+                          res.json({
+                                   result:false,
+                                   msg: '존재하지 않는 계정입니다!'
+                                   });
+                          } else if(pwd !==result[0].userPwd){
+                          res.json({
+                                   result:false,
+                                   msg:'비밀번호가 틀렸습니다!'
+                                   });
+                          }else{
+                          res.json({
+                                   result:true,
+                                   msg:'로그인성공!',
+                                   user_Id:userId
+                                   });
+                          }
+                          }
+                          })
+         });
+
+
 
 http.createServer(app).listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
