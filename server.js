@@ -132,7 +132,35 @@ app.post('/insert', function (request, response) {
       if(err)
         console.log(err)
         else{
-          connection.query('select * from allUser ',  function (err,rows) {
+          connection.query('INSERT INTO userinfo (userId) SELECT ? FROM DUAL WHERE NOT EXISTS (SELECT * FROM userinfo WHERE userId=?)', [body.userID, body.userID], function (err,rows) {
+            if(err)
+              console.log(err)
+              // 응답합니다.
+            else{
+              response.send(rows);
+            }
+          });
+        }
+    });
+});
+
+app.get('/friendinsert', function (request, response) {
+    // 파일을 읽습니다.
+    fs.readFile('friendinsert.html', 'utf8', function (error, data) {
+        // 응답합니다.
+        response.send(data);
+    });
+});
+
+app.post('/friendinsert', function (request, response) {
+    // 변수를 선언합니다.
+    var body = request.body;
+    // 데이터베이스 쿼리를 실행합니다.
+    connection.query('INSERT INTO userinfo (userId) VALUES (?)', [body.userID], function (err,res) {
+      if(err)
+        console.log(err)
+        else{
+          connection.query('select userID from allUser ',  function (err,rows) {
             if(err)
               console.log(err)
               // 응답합니다.
@@ -181,7 +209,7 @@ app.post('/select', function (req, res) {
 
 app.get('/userresult', function (request, response) {
     // 파일을 읽습니다.
-    fs.readFile('insert.html', 'utf8', function (error, data) {
+    fs.readFile('userresult.html', 'utf8', function (error, data) {
         // 응답합니다.
         response.send(data);
     });
@@ -189,9 +217,9 @@ app.get('/userresult', function (request, response) {
 
 app.post('/userresult', function (request, response) {
     // 변수를 선언합니다.
-    //var body = request.body;
+    var body = request.body;
     // 데이터베이스 쿼리를 실행합니다.
-    connection.query('select user, rank, name from rankSave ',  function (err,rows) {
+    connection.query('select rank, name from rankSave where userID = ?', [body.userID] ,function (err,rows) {
       if(err)
         console.log(err)
         // 응답합니다.
@@ -212,9 +240,9 @@ app.get('/showroute', function (request, response) {
 });
 app.post('/showroute', function (request, response) {
     // 변수를 선언합니다.
-    //var body = request.body;
+    var body = request.body;
     // 데이터베이스 쿼리를 실행합니다.
-    connection.query('select user, name from makeroute ',  function (err,rows) {
+    connection.query('select name from makeroute where userID = ?', [body.userID] ,function (err,rows) {
       if(err)
         console.log(err)
         // 응답합니다.
