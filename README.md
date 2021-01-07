@@ -11,6 +11,7 @@
 > 지하철 노선도를 기반으로 사용자에게 최적의 만남 장소를 추천하는 BFS 기반 알고리즘 개발
 1. 사용자가 입력한 지하철 역의 주변 역들을 하나하나 탐색하며 code set에 저장한다.
 ![image](https://user-images.githubusercontent.com/26674094/103951314-c7d22080-5181-11eb-8862-e1835e210121.png)
+<img src="https://user-images.githubusercontent.com/26674094/103951314-c7d22080-5181-11eb-8862-e1835e210121.png" width="450px" height="300px" title="px(픽셀) 크기 설정" alt="스크린샷1"></img>
 2. 각 사용자 별 code set에 담겨있는 지하철 역들의 공통 역을 common set에 저장한다.
 ![image](https://user-images.githubusercontent.com/26674094/103951748-9ad23d80-5182-11eb-87e2-79c324b78e53.png)
 3. common set에 대해 각 사용자가 선호하는 방식에 따라 정렬한다 
