@@ -27,6 +27,5 @@
 * 모바일(안드로이드)#2 : <https://github.com/smulionOong/Goodplace2_MAP>
 * 기타(API 적용해본 코드) : <https://github.com/smulionOong/algorithm_odsay>
 * 기타(API 적용해본 코드) : <https://github.com/smulionOong/algorithm_odsay2_showroute>
-* 기타(API 적용해본 코드) : <https://github.com/smulionOong/algorithm_odsay>
-* 기타(API 적용해본 코드) : <https://github.com/smulionOong/algorithm_odsay2_showroute>
+
 
