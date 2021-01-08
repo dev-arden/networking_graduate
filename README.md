@@ -21,4 +21,8 @@
 * 사용자 C : 최소환승 선호 -> 사용자 C가 입력한 역으로부터 가장 환승이 적은 역 순으로 정렬
 ![image](https://user-images.githubusercontent.com/26674094/103951774-a6256900-5182-11eb-8435-25023aae812c.png)
 ## 관련 깃헙 링크
-* <https://github.com/smulionOong/algorithm_odsay2>
+* 서버 파트 : <https://github.com/smulionOong/networking_graduate>
+* 알고리즘 파트 : <https://github.com/smulionOong/algorithm_odsay2>
+* 모바일(안드로이드)#1 : <https://github.com/smulionOong/Goodplace>
+* 모바일(안드로이드)#2 : <https://github.com/smulionOong/Goodplace2_MAP>
+
